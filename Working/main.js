@@ -1,9 +1,10 @@
 var roleHarvester   = require('role.harvester');
-var roleHarvester2  = require('role.harvester_2');
 var roleUpgrader    = require('role.upgrader');
 var roleBuilder     = require('role.builder');
 var roleRepair      = require('role.repair');
 var spawner         = require('spawner');
+var roleAttack      = require('role.attack');
+var roleHauler      = require('role.hauler');
 
 
 module.exports.loop = function () {
@@ -25,11 +26,12 @@ module.exports.loop = function () {
 	/* Console output */
 	if(Game.time % 10 == 0){
 		var harvesters = _(Game.creeps).filter( { memory: { role: 'harvester' } } ).size();
-		var harvesters2 = _(Game.creeps).filter( { memory: { role: 'harvester2' } } ).size();
 		var builder = _(Game.creeps).filter( { memory: { role: 'builder' } } ).size();
 		var upgrader = _(Game.creeps).filter( { memory: { role: 'upgrader' } } ).size();
 		var repairs = _(Game.creeps).filter( { memory: { role: 'repair' } } ).size();
-		console.log('Harvester:\t' +  harvesters + '\nHarvester2:\t' + harvesters2 + '\nBuilders:\t' + builder + '\nUpgraders:\t' + upgrader + '\nrepair:\t\t' + repairs);
+		var repairs = _(Game.creeps).filter( { memory: { role: 'repair' } } ).size();
+		var attacker = _(Game.creeps).filter( { memory: { role: 'attack' } } ).size();
+		console.log('Harvester:\t' +  harvesters + '\nBuilders:\t' + builder + '\nUpgraders:\t' + upgrader + '\nrepair:\t\t' + repairs+ '\nAttackers:\t' + attacker);
 	}
     
     
@@ -55,9 +57,6 @@ module.exports.loop = function () {
         if(creep.memory.role == 'harvester') {
             roleHarvester.run(creep);
         }
-        if(creep.memory.role == 'harvester2') {
-            roleHarvester2.run(creep);
-        }
         if(creep.memory.role == 'upgrader') {
             roleUpgrader.run(creep);
         }
@@ -66,6 +65,12 @@ module.exports.loop = function () {
         }
 		if(creep.memory.role == 'repair') {
             roleRepair.run(creep);
+        }
+        if(creep.memory.role == 'hauler') {
+            roleHauler.run(creep);
+        }
+        if(creep.memory.role == 'attack') {
+            roleAttack.run(creep);
         }
 		
     }

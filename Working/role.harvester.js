@@ -4,6 +4,9 @@ var roleHarvester = {
 
     /** @param {Creep} creep **/
     run: function(creep) {
+        
+    
+        
         if(creep.carry.energy < creep.carryCapacity) {
             if(creep.memory.node == 99){
             var node0 = _(Game.creeps).filter( { memory: { node: 0 } } ).size();
