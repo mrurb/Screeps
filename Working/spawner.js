@@ -1,6 +1,6 @@
 var spawner = {
 
-    /** @param {Creep} creep **/
+    /** @param {Room} Room name **/
     run: function(rname) {
 		//var spawn = Game.rooms[rname].find[FIND_MY_SPAWNS[0];
 		
@@ -10,19 +10,19 @@ var spawner = {
 		var upgraders = _(Game.creeps).filter( { memory: { role: 'upgrader' } } ).size();
 		var repairs = _(Game.creeps).filter( { memory: { role: 'repair' } } ).size();
 		
-		var maxHarvesters   = 2;
-        var maxHarvesters2  = 2;
+		var maxHarvesters   = 4;
+        var maxHarvesters2  = 0;
 		var maxBuilders     = 2;
-		var maxUpgraders    = 4;
+		var maxUpgraders    = 5;
 		var maxRepairs      = 1;
-		
+		var energyUse       = 0.75;
 		
 		
 		
 		function getCreepBody(){
 			var energyc = Game.rooms[rname].energyCapacityAvailable;
 			var creepSetup2 = [];
-			var totalBlocks = (energyc/50)*0.75;
+			var totalBlocks = (energyc/50)*energyUse;
 			var worka = Math.floor(totalBlocks*0.3);
 			var carrya = Math.floor(totalBlocks*0.2);
 			var movea = Math.floor(totalBlocks*0.2);
@@ -66,7 +66,7 @@ var spawner = {
         			    cbody += "Harvester x" + harvestersMissing + " | "; 
         			}
         			if(harvesters2 != maxHarvesters2){
-        			    cbody += "Harvester2 x" + harvester2Missing + " | "; 
+        			    cbody += "Harvester2 x" + harvesters2Missing + " | "; 
         			}
         			if(builders != maxBuilders){
         			    cbody += "Builders x" + buildersMissing + " | "; 
@@ -78,7 +78,9 @@ var spawner = {
         			    cbody += "Repairs x" + repairMissing + " | "; 
         			}
     			}
-    			
+    		    if(harvestersMissing == 0){
+    		        creepSetup2 = [WORK, CARRY, MOVE];
+    		    }
     			
 			console.log(cbody);
 			}

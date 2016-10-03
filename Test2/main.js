@@ -4,6 +4,9 @@ var roleUpgrader    = require('role.upgrader');
 var roleBuilder     = require('role.builder');
 var roleRepair      = require('role.repair');
 var spawner         = require('spawner');
+var killCreeps      = require('killCreeps');
+
+
 
 module.exports.loop = function () {
     
@@ -62,6 +65,21 @@ module.exports.loop = function () {
         }
 		
     }
+    
+    
+    
+   
+};
+/*
+ function killAllCreeps(){
+        for(var name in Game.creeps){
+            var creep = Game.creeps[name];
+            creep.suicide;
+        }
+        
+module.exports = {
+    killAllCreeps: killAllCreeps;
+};
+*/
+
 	
-	
-}

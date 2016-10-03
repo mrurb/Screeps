@@ -1,9 +1,8 @@
-var roleHarvester   = require('role.harvester');
-var roleHarvester2  = require('role.harvester_2');
-var roleUpgrader    = require('role.upgrader');
-var roleBuilder     = require('role.builder');
-var roleRepair      = require('role.repair');
-var spawner         = require('spawner');
+var roleHarvester = require('role.harvester');
+var roleUpgrader = require('role.upgrader');
+var roleBuilder = require('role.builder');
+var roleRepair = require('role.repair');
+var spawner = require('spawner')
 
 module.exports.loop = function () {
     
@@ -17,11 +16,10 @@ module.exports.loop = function () {
 	
 	if(Game.time % 10 == 0){
 		var harvesters = _(Game.creeps).filter( { memory: { role: 'harvester' } } ).size();
-		var harvesters2 = _(Game.creeps).filter( { memory: { role: 'harvester2' } } ).size();
 		var builder = _(Game.creeps).filter( { memory: { role: 'builder' } } ).size();
 		var upgrader = _(Game.creeps).filter( { memory: { role: 'upgrader' } } ).size();
 		var repair = _(Game.creeps).filter( { memory: { role: 'repair' } } ).size();
-		console.log('Harvester:\t' +  harvesters + '\nHarvester2:\t' + harvesters2 + '\nBuilders:\t' + builder + '\nUpgraders:\t' + upgrader + '\nrepair:\t\t' + repair);
+		console.log('Harvester:\t' +  harvesters + '\nBuilders:\t' + builder + '\nUpgraders:\t' + upgrader + '\nrepair:\t\t' + repair);
 	}
 
     var tower = Game.getObjectById('TOWER_ID');
@@ -47,9 +45,6 @@ module.exports.loop = function () {
         var creep = Game.creeps[name];
         if(creep.memory.role == 'harvester') {
             roleHarvester.run(creep);
-        }
-        if(creep.memory.role == 'harvester2') {
-            roleHarvester2.run(creep);
         }
         if(creep.memory.role == 'upgrader') {
             roleUpgrader.run(creep);

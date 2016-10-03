@@ -66,7 +66,7 @@ var spawner = {
         			    cbody += "Harvester x" + harvestersMissing + " | "; 
         			}
         			if(harvesters2 != maxHarvesters2){
-        			    cbody += "Harvester2 x" + harvester2Missing + " | "; 
+        			    cbody += "Harvester2 x" + harvesters2Missing + " | "; 
         			}
         			if(builders != maxBuilders){
         			    cbody += "Builders x" + buildersMissing + " | "; 

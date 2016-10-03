@@ -2,11 +2,11 @@ var roleBuilder = require("role.builder");
 
 module.exports = {
     run: function(creep){
-        if (creep.memory.working == true && creep.carry.energy == 0) {
+        if (creep.memory.working && creep.carry.energy == 0) {
            creep.memory.working = false;
            creep.say('mining');
         }
-        else if (creep.memory.working == false && creep.carry.energy == creep.carryCapacity) {
+        if (!creep.memory.working && creep.carry.energy == creep.carryCapacity) {
             creep.memory.working = true;
             creep.say('reps incoming');
         }
@@ -20,13 +20,14 @@ module.exports = {
                 }
             }
             else {
-               
+				
+				creep.moveTo(Game.flags.Idel);
             }
         }
         else {
-            var source = creep.pos.findClosestByPath (FIND_SOURCES);
-            if (creep.harvest(source[0]) == ERR_NOT_IN_RANGE) {
-                creep.moveTo (source[0]);
+            var sources = creep.room.find(FIND_SOURCES);
+            if(creep.harvest(sources[1]) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(sources[1]);
             }
         }
     }

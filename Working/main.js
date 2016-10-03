@@ -5,25 +5,35 @@ var roleBuilder     = require('role.builder');
 var roleRepair      = require('role.repair');
 var spawner         = require('spawner');
 
+
 module.exports.loop = function () {
     
+    /* remove dead creeps  */
+    for(var i in Memory.creeps) {
+        if(!Game.creeps[i]) {
+            delete Memory.creeps[i];
+        }
+    }
     
-	
+    
+	/* Room controller */
 	for(var rname in Game.rooms) {
 	    spawner.run(rname);
 	}
 	
 	
-	
+	/* Console output */
 	if(Game.time % 10 == 0){
 		var harvesters = _(Game.creeps).filter( { memory: { role: 'harvester' } } ).size();
 		var harvesters2 = _(Game.creeps).filter( { memory: { role: 'harvester2' } } ).size();
 		var builder = _(Game.creeps).filter( { memory: { role: 'builder' } } ).size();
 		var upgrader = _(Game.creeps).filter( { memory: { role: 'upgrader' } } ).size();
-		var repair = _(Game.creeps).filter( { memory: { role: 'repair' } } ).size();
-		console.log('Harvester:\t' +  harvesters + '\nHarvester2:\t' + harvesters2 + '\nBuilders:\t' + builder + '\nUpgraders:\t' + upgrader + '\nrepair:\t\t' + repair);
+		var repairs = _(Game.creeps).filter( { memory: { role: 'repair' } } ).size();
+		console.log('Harvester:\t' +  harvesters + '\nHarvester2:\t' + harvesters2 + '\nBuilders:\t' + builder + '\nUpgraders:\t' + upgrader + '\nrepair:\t\t' + repairs);
 	}
-
+    
+    
+    /* Tower controller */
     var tower = Game.getObjectById('TOWER_ID');
     
     if(tower) {
@@ -39,10 +49,7 @@ module.exports.loop = function () {
     }
 
 	
-	
-	
-	
-	
+	/* Creep controller */
     for(var name in Game.creeps) {
         var creep = Game.creeps[name];
         if(creep.memory.role == 'harvester') {
@@ -62,6 +69,21 @@ module.exports.loop = function () {
         }
 		
     }
+    
+    
+    
+   
+};
+/*
+ function killAllCreeps(){
+        for(var name in Game.creeps){
+            var creep = Game.creeps[name];
+            creep.suicide;
+        }
+        
+module.exports = {
+    killAllCreeps: killAllCreeps;
+};
+*/
+
 	
-	
-}
