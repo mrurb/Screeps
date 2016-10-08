@@ -5,9 +5,18 @@ var roleHarvester = {
     /** @param {Creep} creep **/
     run: function(creep) {
         
+        if(creep.carry.energy == 0  && creep.memory.offload){
+            creep.memory.offload = false;
+            creep.say("loading")
+        }
+        if(creep.carry.energy == creep.carryCapacity && !creep.memory.offload){
+            creep.memory.offload = true;
+            creep.say("off-loading")
+        }
+    
     
         
-        if(creep.carry.energy < creep.carryCapacity) {
+        if(!creep.memory.offload) {
             if(creep.memory.node == 99){
             var node0 = _(Game.creeps).filter( { memory: { node: 0 } } ).size();
             var node1 = _(Game.creeps).filter( { memory: { node: 0 } } ).size();

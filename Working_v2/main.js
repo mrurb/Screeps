@@ -8,9 +8,32 @@ var roleAttack      = require('role.attack');
 var roleHauler      = require('role.hauler');
 var roleHauler2     = require('role.hauler_2');
 var roleClaim       = require('role.claim');
+var roleMiner       = require('role.miner');
+//var recycle         = require('recycle');
+
 
 
 module.exports.loop = function () {
+    
+	    var friendly = ["Pandemic_FTP", "Webba", "Mantras"];
+	    
+	    var creepJson = {
+            "E64S58":{"energy":0.75, "creeps":{
+                'harvester':{"name":'harvester', "max":3},
+                'attack':{"name":'attack', "max":0, "body":["tough", "tough", "tough", "tough","attack", "move", "move", "move", "attack", "attack", "move"]}, 
+                'builder':{"name":'builder', "max":1}, 
+                'upgrader':{"name":'upgrader', "max":1}, 
+                'repair':{"name":'repair', "max":1}, 
+                'hauler2':{"name":'hauler2', "max":3}, 
+                'repair2':{"name":'repair2', "max":0},
+                'hauler':{"name":'hauler', "max":2}, 
+                'claim':{"name":'claimer', "max":0, "body":["claim", "move", "move"]}
+                }
+                
+            }
+	    };
+	    
+	    
     
     /* remove dead creeps  */
     for(var i in Memory.creeps) {
@@ -22,25 +45,25 @@ module.exports.loop = function () {
     
 	/* Room controller */
 	for(var rname in Game.rooms) {
-	    spawner.run(rname);
+	    if(creepJson[rname]){
+	        spawner.run(rname, creepJson[rname]);
+	    }
+
+	    
 	}
 	
 	
 	/* Console output */
 
 	if(Game.time % 10 == 0){
-	    var carr = [['harvester', 2],
-	    ['builder', 1], 
-	    ['upgrader', 1], 
-	    ['repair', 2], 
-	    ['repair2', 0],
-	    ['attack', 0], 
-	    ['hauler', 4], 
-	    ['hauler2', 4]]
-	    var conOut = '';
-	    for(var res in carr){
-	        var cSize = _(Game.creeps).filter( { memory: { role: carr[res][0] } } ).size();
-	        conOut += carr[res][0] + ':\t'+ ((carr[res][0].length <= 6) ? '\t' : '') + cSize + "/" + carr[res][1] +  '\n';
+	    for(var rname in Game.rooms) {
+	        if(creepJson[rname]){
+        	    var conOut = '';
+        	    for(var res in creepJson[rname].creeps){
+        	        var cSize = _(Game.creeps).filter( { memory: { role: res } } ).size();
+        	       conOut += res + ':\t'+ ((res.length <= 6) ? '\t' : '') + cSize + "/" + creepJson[rname].creeps[res].max +  '\n';
+        	    }
+	        }
 	    }
 	    console.log(conOut);
 	}
@@ -50,22 +73,43 @@ module.exports.loop = function () {
     var tower = Game.getObjectById('57f4c26e4f6b4a4070acc6a6');
     
     if(tower) {
-        if(tower.energy > 500 ){
+        if(tower.energy > 600 ){
             var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {filter: (structure) => (structure.hits < structure.hitsMax && structure.structureType != STRUCTURE_WALL) || (structure.hits < 2000 && structure.structureType === STRUCTURE_WALL) });
             if(closestDamagedStructure) {
                 tower.repair(closestDamagedStructure);
             }
         }
-        var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+            var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
         if(closestHostile) {
             tower.attack(closestHostile);
         }
     }
+    /*
+    , {
+                filter: (c) => {
+                        return friendly.indexOf(c.owner.username) == -1;
+                }
+            }*/
+    
+    var spawn = Game.spawns.Home;
+    
+    var closestHostile = spawn.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+        if(closestHostile) {
+            var homeRoom = spawn.room;
+            homeRoom.controller.activateSafeMode();
+        }
 
 	
 	/* Creep controller */
     for(var name in Game.creeps) {
         var creep = Game.creeps[name];
+        
+        if(creep.hits < creep.memory.lastHits) {
+             Game.notify('Creep '+creep+' has been attacked at '+creep.pos+'!');
+        }
+        creep.memory.lastHits = creep.hits;
+                
+        //if(creep.ticksToLive < 10000){
         if(creep.memory.role == 'harvester') {
             roleHarvester.run(creep);
         }
@@ -93,7 +137,13 @@ module.exports.loop = function () {
         if(creep.memory.role == 'claim'){
             roleClaim.run(creep);
         }
-		
+        /*}else{
+            if(creep.room.name != Game.spawns.Home.room.name){
+                creep.moveTo(Game.spawns.Home)
+            }else{
+                recycle.run(creep);
+            }
+        }*/
     }
     
     

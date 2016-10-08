@@ -1,6 +1,6 @@
 module.exports = {
     run: function(creep){
-        if (creep.memory.working) {
+        if (!creep.memory.working) {
             var target2 = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, { filter: (s) => s.structureType != STRUCTURE_CONTROLLER && s.structureType == STRUCTURE_TOWER});
             var target3 = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, { filter: (s) => s.structureType != STRUCTURE_CONTROLLER});
             var target = creep.pos.findClosestByPath (FIND_HOSTILE_CREEPS);
@@ -22,9 +22,9 @@ module.exports = {
                 }
             }
             else {
-                //creep.moveTo(Game.flags.AttackF);
-                //var flag = creep.moveTo(Game.flags.AttackF);
-                //creep.moveTo(flag);
+                creep.moveTo(Game.flags.AttackF);
+                var flag = creep.moveTo(Game.flags.AttackF);
+                creep.moveTo(flag);
             }
         }
     }

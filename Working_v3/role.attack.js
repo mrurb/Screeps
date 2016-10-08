@@ -22,9 +22,9 @@ module.exports = {
                 }
             }
             else {
-                //creep.moveTo(Game.flags.AttackF);
-                //var flag = creep.moveTo(Game.flags.AttackF);
-                //creep.moveTo(flag);
+                creep.moveTo(Game.flags.AttackF);
+                var flag = creep.moveTo(Game.flags.AttackF);
+                creep.moveTo(flag);
             }
         }
     }

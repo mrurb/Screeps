@@ -1,11 +1,4 @@
-var spawner = {
-
-    /** @param {Room} Room name **/
-    run: function(rname) {
-		var spawn = Game.rooms[rname].find(FIND_MY_SPAWNS)[0];
-		if(spawn){
-    		
-    		
+/*	
             var harvesters = _(Game.creeps).filter( { memory: { role: 'harvester' } } ).size();
     		var builders = _(Game.creeps).filter( { memory: { role: 'builder' } } ).size();
     		var upgraders = _(Game.creeps).filter( { memory: { role: 'upgrader' } } ).size();
@@ -20,52 +13,14 @@ var spawner = {
     		var maxUpgraders    = 1;
     		var maxRepairs      = 2;
     		var maxRepairs2      = 0;
-    		var energyUse       = 0.75;
+    		
     		var maxAttacker     = 0;
     		var maxHauler     = 4;
     		var maxHauler2     = 4;
     		
     		
     		
-    		function getCreepBody(rname){
-    			var energyc = Game.rooms[rname].energyCapacityAvailable;
-    			var creepSetup2 = [];
-    			var totalBlocks = ((energyc-200)/50)*energyUse;
-    			var worka = Math.floor(totalBlocks*0.3);
-    			var carrya = Math.floor(totalBlocks*0.2);
-    			var movea = Math.floor(totalBlocks*0.2);
-    			    creepSetup2=[WORK, CARRY, MOVE];
-        			for(i=0;i < worka; i++){
-        				creepSetup2.push(WORK);
-        			}
-        			for(i=0;i < carrya; i++){
-        				creepSetup2.push(CARRY);
-        			}
-        			for(i=0;i < movea; i++){
-        				creepSetup2.push(MOVE);
-        			}
-        			var harvestersMissing = maxHarvesters - harvesters;
-        			//creepSetup2 = [WORK, CARRY, MOVE];
-        			
-        			if(harvestersMissing == maxHarvesters){
-        		        creepSetup2 = [WORK, CARRY, MOVE];
-        		    }
-        		    //conOut(energyc, worka, carrya, movea);
-        		    
-        		    if(Game.time % 10 == 1){
-            		    var cbody = rname + ", " + totalBlocks + " " + energyc + ": " + (worka + 1) + " " + carrya  + " " + movea + " |";
-            		    var x = 0;
-            			while(creepSetup2[x]){
-            			    cbody+= ", " + creepSetup2[x]; 
-            			    x++;
-            			}
-            			console.log(cbody);
-        		    }
-        		    
-        		    
-        		    
-    			return creepSetup2;
-    		}
+    
     		
     		var test = getCreepBody(rname);
     	
@@ -99,11 +54,11 @@ var spawner = {
                  spawn.createCreep(getCreepBody(rname), undefined, {role: "hauler2"});
             } 
     		
-    		/*
+    		
     		if(Game.spawns['Home'].memory.tick == 5 % 5) {
     			console.log(Game.spawns['Home'].memory.tick);
     		}
-    		*/
+    		
     		
     		
     			function conOut(energyc, worka, carrya, movea){
@@ -154,10 +109,4 @@ var spawner = {
     			console.log(cbody);
     			}
     			}
-    		
-    		
-        }
-    }
-};
-
-module.exports = spawner;
+    		*/

@@ -13,20 +13,24 @@ module.exports = {
     
         if (creep.memory.working == true) {
             if(creep.memory.rampart){
-                var structure = creep.pos.findClosestByPath(FIND_STRUCTURES, { filter: (s) => s.hits < 10000 && s.structureType == STRUCTURE_RAMPART  });
-                if(structure == undefined){
-                    structure = creep.pos.findClosestByPath(FIND_STRUCTURES, { filter: (s) => s.hits < s.hitsMax && s.structureType == STRUCTURE_RAMPART  });
-                }
+                    structure = creep.pos.findClosestByPath(FIND_STRUCTURES, { filter: (s) => (
+                    s.hits < s.hitsMax && s.structureType == STRUCTURE_RAMPART) 
+                    || (s.hits < 1000 && s.structureType == STRUCTURE_RAMPART) 
+                    || (s.hits < 1000 && s.structureType == STRUCTURE_WALL)
+                    //|| (s.hits < 10000 && s.structureType == STRUCTURE_RAMPART) 
+                    || (s.hits < 10000 && s.structureType == STRUCTURE_WALL)
+                    //|| (s.hits < s.hitsMax && s.structureType == STRUCTURE_RAMPART) 
+                    //|| (s.hits < s.hitsMax && s.structureType == STRUCTURE_WALL)
+                    });
             }else{
-                var structure = creep.pos.findClosestByPath(FIND_STRUCTURES, { filter: (s) => s.hits < s.hitsMax && s.structureType != STRUCTURE_WALL && s.structureType != STRUCTURE_RAMPART  });
+                var structure = creep.pos.findClosestByPath(FIND_STRUCTURES, { filter: (s) =>   (s.hits < s.hitsMax && s.structureType != STRUCTURE_WALL && s.structureType != STRUCTURE_RAMPART)  });
             }
             
             if (structure != undefined) {
                 if (creep.repair(structure) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(structure);
                 }
-            }
-            else {
+            } else {
 				structure = creep.pos.findClosestByPath(FIND_STRUCTURES, { filter: (s) => s.hits < s.hitsMax && (s.structureType == STRUCTURE_RAMPART || s.structureType == STRUCTURE_WALL) });
 				if (structure != undefined) {
                     if (creep.repair(structure) == ERR_NOT_IN_RANGE) {
@@ -34,14 +38,14 @@ module.exports = {
                     }
                 }
                 else {
-					creep.moveTo(Game.flags.Idel);
+					roleBuilder.run(creep);
                 }
             }
         }
         else {
             var sources = creep.room.find(FIND_SOURCES);
-            if(creep.harvest(sources[1]) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(sources[1]);
+            if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(sources[0]);
             }
         }
     }
