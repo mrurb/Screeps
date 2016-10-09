@@ -10,6 +10,7 @@ var roleHauler2     = require('role.hauler_2');
 var roleClaim       = require('role.claim');
 var roleMiner       = require('role.miner');
 var roleMover       = require('role.mover');
+var roleMassUpgader = require('role.massupgrader')
 //var recycle         = require('recycle');
 
 
@@ -22,14 +23,15 @@ module.exports.loop = function () {
             "E64S58":{"energy":0.80, "creeps":{
                 'harvester':{"name":'harvester', "max":0},
                 'miner':{"name":'miner', "max":1, 'bratio':{"carry":0.26, "work":0.37}},
-                'move':{"name":'move', "max":1, "bratio":{"carry":0.7, "move":0.30}},
-                'attack':{"name":'attack', "max":0, "body":["tough", "tough", "tough", "tough","attack", "move", "move", "move", "attack", "attack", "move"]}, 
+                'move':{"name":'move', "max":1, "bratio":{"carry":0.66, "move":0.34}},
+                'attack':{"name":'attack', "max":0, "body":["tough", "tough", "tough", "tough","tough", "tough", "tough", "tough","attack","attack","attack","attack","attack","attack", "move", "move", "move", "attack", "attack", "move"]}, 
                 'builder':{"name":'builder', "max":1}, 
                 'upgrader':{"name":'upgrader', "max":1, "bratio":{"carry":0.33, "work":0.21, "move":0.16}}, 
                 'repair':{"name":'repair', "max":1}, 
-                'hauler2':{"name":'hauler2', "max":4, "bratio":{"carry":0.33, "work":0.16, "move":0.33}}, 
+                'hauler2':{"name":'hauler2', "max":0, "bratio":{"carry":0.33, "work":0.16, "move":0.33}}, 
                 'repair2':{"name":'repair2', "max":0},
-                'hauler':{"name":'hauler', "max":5, "bratio":{"carry":0.33, "work":0.16, "move":0.33}}, 
+                'hauler':{"name":'hauler', "max":1, "bratio":{"carry":0.33, "work":0.16, "move":0.33}},
+                'massupgrade':{"name":'massupgrade', "max":1, "bratio":{"carry":0.26, "work":0.37}}, 
                 'claim':{"name":'claimer', "max":0, "body":["claim", "move", "move"]}
                 }
                 
@@ -79,20 +81,38 @@ module.exports.loop = function () {
     
     
     /* Tower controller */
-    var tower = Game.getObjectById('57f4c26e4f6b4a4070acc6a6');
     
-    if(tower) {
-        if(tower.energy > 600 ){
-            var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {filter: (structure) => (structure.hits < structure.hitsMax && (structure.structureType != STRUCTURE_WALL && structure.structureType != STRUCTURE_RAMPART)) || (structure.hits < 50000 && (structure.structureType === STRUCTURE_WALL && structure.structureType === STRUCTURE_RAMPART)) });
-            if(closestDamagedStructure) {
-                tower.repair(closestDamagedStructure);
+    
+    
+    var tower2 = [Game.getObjectById('57f4c26e4f6b4a4070acc6a6'),Game.getObjectById('57fa446a7e2bcff275d14ff1')];
+    
+    for(var x in tower2){
+        var tower = tower2[tower];
+       if(tower) {
+            if(tower.energy > 600 ){
+                
+                var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {filter: (structure) => (structure.hits < structure.hitsMax && (structure.structureType != STRUCTURE_WALL && structure.structureType != STRUCTURE_RAMPART)) || (structure.hits < 50000 && (structure.structureType === STRUCTURE_WALL || structure.structureType === STRUCTURE_RAMPART)) });
+            
+                
+                if(closestDamagedStructure) {
+                    tower.repair(closestDamagedStructure);
+                }
             }
-        }
-            var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-        if(closestHostile) {
-            tower.attack(closestHostile);
-        }
+            /*
+                var creepHurt = tower.pos.findClosestByRange(FIND_MY_CREEPS, {filter: (c) => c.hits < c.hitsMax})
+                if(creepHurt){
+                    tower.heal(creepHurt);
+                }
+            */
+                var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+            if(closestHostile) {
+                tower.attack(closestHostile);
+            }
+        } 
     }
+    
+    
+    
     /*
     , {
                 filter: (c) => {
@@ -105,7 +125,7 @@ module.exports.loop = function () {
     var closestHostile = spawn.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
         if(closestHostile) {
             var homeRoom = spawn.room;
-            homeRoom.controller.activateSafeMode();
+            //homeRoom.controller.activateSafeMode();
         }
 
 	
@@ -157,6 +177,9 @@ module.exports.loop = function () {
         }
         if(creep.memory.role == 'move'){
             roleMover.run(creep);
+        }
+        if(creep.memory.role == 'massupgrade'){
+            roleMassUpgader.run(creep);
         }
         /*}else{
             if(creep.room.name != Game.spawns.Home.room.name){

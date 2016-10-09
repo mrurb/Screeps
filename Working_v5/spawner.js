@@ -6,9 +6,10 @@ var spawner = {
 		
 		if(spawn){
 		        var harvesters = _(Game.creeps).filter( { memory: { role: 'harvester' } } ).size();
-	            if(harvesters == 0 && creepJson.creeps.miner.max != 0 && creepJson.creeps.harvester.max == 0 && Game.rooms[rname].energyAvailable < 500){
+	            if(harvesters == 0 && creepJson.creeps.miner.max != 0 && creepJson.creeps.harvester.max == 0 && Game.rooms[rname].energyAvailable < 1000){
 	                var miners = _(Game.creeps).filter( { memory: { role: 'miner' } } ).size();
 	                var mover = _(Game.creeps).filter( { memory: { role: 'move' } } ).size();
+	                
 	                if(miners == 0 || mover == 0){
 	                    creepJson.creeps.harvester.max = 1;
 	                }

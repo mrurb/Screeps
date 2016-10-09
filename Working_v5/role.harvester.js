@@ -17,21 +17,40 @@ var roleHarvester = {
     
         
         if(!creep.memory.offload) {
-            if(creep.memory.node == 99){
-            var node0 = _(Game.creeps).filter( { memory: { node: 0 } } ).size();
-            var node1 = _(Game.creeps).filter( { memory: { node: 0 } } ).size();
-            if(node0 < 2){
-                creep.memory.node = 0;
-                creep.say('node 0');
-            }else{
-                 creep.memory.node = 0;
-                creep.say('node 1');
+            var target = creep.room.find(STRUCTURE_STORAGE);
+            if(false){
+               var target = creep.room.find(FIND_STRUCTURES, {
+                    filter: (structure) => {
+                        return structure.structureType == STRUCTURE_STORAGE;
+                    }
+                });
                 
-            }
-            }
-            var sources = creep.room.find(FIND_SOURCES);
-            if(creep.harvest(sources[creep.memory.node]) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(sources[creep.memory.node]);
+                if(creep.withdraw(target[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    
+                	creep.moveTo(target[0]);    
+                }
+                
+            }else{
+                
+            
+                if(creep.memory.node == 99){
+                    var node0 = _(Game.creeps).filter( { memory: { node: 0 } } ).size();
+                    var node1 = _(Game.creeps).filter( { memory: { node: 0 } } ).size();
+                    if(node0 < 2){
+                        creep.memory.node = 0;
+                        creep.say('node 0');
+                    }else{
+                         creep.memory.node = 0;
+                        creep.say('node 1');
+                        
+                    }
+                }
+                
+                var sources = creep.room.find(FIND_SOURCES);
+                if(creep.harvest(sources[creep.memory.node]) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(sources[creep.memory.node]);
+                }
+                
             }
         }
         else {

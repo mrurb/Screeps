@@ -16,7 +16,7 @@ var roleBuilder = {
 
         if(creep.memory.building) {
 
-            var targets = creep.room.find(FIND_CONSTRUCTION_SITES, { filter: (s) => s.structureType != STRUCTURE_ROAD });
+            var targets = creep.room.find(FIND_MY_CONSTRUCTION_SITES, { filter: (s) => s.structureType != STRUCTURE_ROAD });
             if(targets.length) {
                 if(creep.build(targets[0]) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(targets[0]);
@@ -34,12 +34,21 @@ var roleBuilder = {
 			
         }
         else {
-            var target = creep.room.find(FIND_STRUCTURES, {
+            var target = null;
+			
+			
+			if(target = creep.pos.findClosestByRange(FIND_DROPPED_ENERGY)){
+			
+			if(creep.pickup(target) == ERR_NOT_IN_RANGE) {
+				creep.moveTo(target);
+			}
+			
+			
+			}else if(target = creep.room.find(FIND_STRUCTURES, {
                     filter: (structure) => {
                         return structure.structureType == STRUCTURE_STORAGE;
                     }
-            });
-            if(target){
+            })){
                  if(creep.withdraw(target[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 
             	creep.moveTo(target[0]);    
