@@ -1,3 +1,25 @@
+function getDeposit(creep){
+	var tower = creep.room.find(FIND_MY_STRUCTURES, {
+		filter: (s) => (s.structureType == STRUCTURE_TOWER && s.energy < s.energyCapacity)
+	})[0];
+	var deposit = null;
+	if(tower != undefined && tower.energy < 600 ){
+		deposit = tower;
+	}
+	else{
+		deposit = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
+			filter: (s) => ((s.structureType == STRUCTURE_EXTENSION || s.structureType == STRUCTURE_SPAWN) && s.energy < s.energyCapacity && s.room == creep.room)
+		});
+	}
+	if(deposit == undefined){
+		deposit = creep.room.find(FIND_MY_STRUCTURES, {
+			filter: (s) => (s.structureType == STRUCTURE_SPAWN)
+		})[0];
+	}
+	return deposit;
+}
+
+
 module.exports = {
 
 	/** @param {Creep} creep **/
@@ -8,20 +30,9 @@ module.exports = {
 
 
 		if (creep.memory.mining){
-			if(creep.carry.energy == creep.carry.energyCapacity){
-				var tower = creep.room.find(FIND_MY_STRUCTURES, {
-					filter: (s) => s.structureType == STRUCTURE_TOWER;
-				})[0];
-				var deposit = null;
-				if(tower.energy < 600 ){
-					deposit = tower;
-				}
-				else{
-					deposit = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
-						filter: (s) => (s.structureType == STRUCTURE_EXTENSION || s.structureType = STRUCTURE_SPAWN)
-					});
-				}
-				creep.mining = false;
+			if(creep.carry.energy == creep.carryCapacity){
+				var deposit = getDeposit(creep);
+				creep.memory.mining = false;
 				creep.memory.path = creep.pos.findPathTo(deposit);
 				creep.memory.moving = true;
 				creep.memory.moveTarget = deposit.id;
@@ -35,19 +46,30 @@ module.exports = {
 			creep.memory.moving = true;
 			creep.memory.moveTarget = creep.memory.sourceId;
 		}
+		else if (!creep.memory.moving){
+			var deposit = getDeposit(creep);
+			if (!creep.pos.isNearTo(deposit)){
+				creep.memory.path = creep.pos.findPathTo(deposit);
+				creep.memory.moving = true;
+				creep.memory.moveTarget = deposit.id;
+			}
+			else{
+				creep.transfer(deposit, RESOURCE_ENERGY);
+			}
+		}
 		
 
 		if(creep.memory.moving){
 			if(creep.pos.isNearTo(Game.getObjectById(creep.memory.moveTarget))){
-				creep.memory.moving = false;
 				if(creep.memory.moveTarget == creep.memory.sourceId){
+					creep.memory.moving = false;
 					creep.memory.mining = true;
 					creep.memory.moveTarget = undefined;
 				}
 				else{
-					if(creep.transfer(creep.memory.moveTarget, RESOURCE_ENERGY) == OK){
-						creep.memory.moveTarget = undefined;
-					}
+					creep.transfer(Game.getObjectById(creep.memory.moveTarget), RESOURCE_ENERGY)
+					creep.memory.moving = false;
+					creep.memory.moveTarget = undefined;
 				}
 			}
 			else{
